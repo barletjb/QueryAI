@@ -18,6 +18,7 @@ public class MistralAIController {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Veuillez saisir votre thème ? ");
         String theme = scanner.nextLine();
+        scanner.nextLine();
 
         System.out.println("Veuillez saisir le nombre de mois ?");
         int mois = scanner.nextInt();
