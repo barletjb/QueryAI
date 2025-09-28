@@ -1,7 +1,7 @@
 package com.myproject.queryai.springbootaicore.service;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.myproject.queryai.springbootaicore.entity.LLM;
 import com.myproject.queryai.springbootaicore.entity.Prompt;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,18 +15,11 @@ import java.util.Map;
 public class MistralAIServiceImpl implements MistralAIService {
 
     private RestTemplate restTemplate =  new RestTemplate();
-    private final String baseURL;
-    private final String apiKey;
-    private final String model;
+    private final LLM mistral;
 
-    // on va chercher avec value le .yaml
-    public MistralAIServiceImpl(@Value("${openrouter.api.base-url}") String baseURL,
-                                @Value("${openrouter.api.key}") String apiKey,
-                                @Value("${openrouter.api.model}") String model
-    ) {
-        this.baseURL = baseURL;
-        this.apiKey = apiKey;
-        this.model = model;
+
+    public MistralAIServiceImpl(LLM mistral) {
+        this.mistral = mistral;
     }
 
     @Override
@@ -35,7 +28,7 @@ public class MistralAIServiceImpl implements MistralAIService {
 
         // Corps JSON simple représenté par des Map/List (Spring convertira en JSON)
         Map<String, Object> body = Map.of(
-                "model", model,
+                "model", mistral.getModel(),
                 "messages", List.of(
                         Map.of("role", "user", "content", prompt.getText())
                 )
@@ -44,7 +37,7 @@ public class MistralAIServiceImpl implements MistralAIService {
         //Création du hearders
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(apiKey);
+        headers.setBearerAuth(mistral.getApiKey());
         headers.add("HTTP-Referer", "http://localhost");
         headers.add("X-Title", "SpringBoot AI Demo");
 
@@ -54,7 +47,7 @@ public class MistralAIServiceImpl implements MistralAIService {
         // On demande à RestTemplate de nous rendre un JsonNode
         ResponseEntity<JsonNode> response = restTemplate.postForEntity(
                 //Doc de openrouter https://openrouter.ai/docs/api-reference/chat-completion
-                baseURL + "/chat/completions",
+                mistral.getBaseURL() + "/chat/completions",
                 request,
                 JsonNode.class
         );
