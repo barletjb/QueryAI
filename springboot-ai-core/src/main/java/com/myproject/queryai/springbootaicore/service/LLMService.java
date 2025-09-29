@@ -1,6 +1,6 @@
 package com.myproject.queryai.springbootaicore.service;
 
-public interface MistralAIService {
+public interface LLMService {
 
     String generateRoadMap(String theme, int mois);
 }

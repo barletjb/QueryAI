@@ -1,17 +1,17 @@
 package com.myproject.queryai.controller;
 
-import com.myproject.queryai.springbootaicore.service.MistralAIServiceImpl;
+import com.myproject.queryai.springbootaicore.service.OpenRouterServiceImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 
 @Component
-public class MistralAIController {
+public class OpenRouterController {
 
-    private final MistralAIServiceImpl mistralAIService;
+    private final OpenRouterServiceImpl openRouterService;
 
-    public MistralAIController(MistralAIServiceImpl mistralAIService) {
-        this.mistralAIService = mistralAIService;
+    public OpenRouterController(OpenRouterServiceImpl mistralAIService) {
+        this.openRouterService = mistralAIService;
     }
 
     public void generateRoadMapConsole() {
@@ -23,10 +23,9 @@ public class MistralAIController {
         System.out.println("Veuillez saisir le nombre de mois ?");
         int mois = scanner.nextInt();
 
-        String roadMap = mistralAIService.generateRoadMap(theme, mois);
+        String roadMap = openRouterService.generateRoadMap(theme, mois);
         System.out.println(roadMap);
     }
-
 
 
 }

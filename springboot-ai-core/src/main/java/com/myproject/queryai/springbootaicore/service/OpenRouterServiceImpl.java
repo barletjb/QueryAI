@@ -1,6 +1,6 @@
 package com.myproject.queryai.springbootaicore.service;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.myproject.queryai.springbootaicore.entity.LLM;
+import com.myproject.queryai.springbootaicore.config.OpenRouterProperties;
 import com.myproject.queryai.springbootaicore.entity.Prompt;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class MistralAIServiceImpl implements MistralAIService {
+public class OpenRouterServiceImpl implements LLMService {
 
     private RestTemplate restTemplate =  new RestTemplate();
-    private final LLM mistral;
+    private final OpenRouterProperties properties;
 
 
-    public MistralAIServiceImpl(LLM mistral) {
-        this.mistral = mistral;
+    public OpenRouterServiceImpl(OpenRouterProperties properties) {
+        this.properties = properties;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class MistralAIServiceImpl implements MistralAIService {
 
         // Corps JSON simple représenté par des Map/List (Spring convertira en JSON)
         Map<String, Object> body = Map.of(
-                "model", mistral.getModel(),
+                "model", properties.getModel(),
                 "messages", List.of(
                         Map.of("role", "user", "content", prompt.getText())
                 )
@@ -37,7 +37,7 @@ public class MistralAIServiceImpl implements MistralAIService {
         //Création du hearders
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(mistral.getApiKey());
+        headers.setBearerAuth(properties.getKey());
         headers.add("HTTP-Referer", "http://localhost");
         headers.add("X-Title", "SpringBoot AI Demo");
 
@@ -47,7 +47,7 @@ public class MistralAIServiceImpl implements MistralAIService {
         // On demande à RestTemplate de nous rendre un JsonNode
         ResponseEntity<JsonNode> response = restTemplate.postForEntity(
                 //Doc de openrouter https://openrouter.ai/docs/api-reference/chat-completion
-                mistral.getBaseURL() + "/chat/completions",
+                properties.getBaseUrl() + "/chat/completions",
                 request,
                 JsonNode.class
         );
