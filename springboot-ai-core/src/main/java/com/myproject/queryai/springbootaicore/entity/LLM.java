@@ -3,7 +3,7 @@ package com.myproject.queryai.springbootaicore.entity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class LLM {
 
     private final String baseURL;
